@@ -1,142 +1,80 @@
-# 🌋 Mineral Classifier
+# 🪨 Mineral Image Classifier
 
-**Mineral image classification using a custom-built CNN**
+**A CNN built from scratch with PyTorch to classify mineral images — deployed as a live demo on Hugging Face Spaces.**
 
-This project showcases a deep learning model capable of classifying
-mineral images into five categories: **azurite**, **copper**,
-**malachite**, **pyrite**, and **quartz**.\
-The model was built from the ground up using a **custom Convolutional
-Neural Network (CNN)**, trained with PyTorch, and deployed as an
-interactive demo on Hugging Face.
+👉 **Live demo:** https://huggingface.co/spaces/baalboza/mineral_classifier
 
-------------------------------------------------------------------------
+The model classifies photos into five minerals relevant to Chilean copper deposits: **azurite, copper, malachite, pyrite and quartz**.
 
-## 🚀 Live Demo
+---
 
-Try the model directly on Hugging Face Spaces:
+## 📊 Result
 
-👉 https://huggingface.co/spaces/baalboza/mineral_classifier
+| Metric | Value |
+|---|---|
+| Test accuracy (5 classes) | **85.65%** |
 
-------------------------------------------------------------------------
+The confusion matrix and the full experiment log are in [`exploration.ipynb`](exploration.ipynb).
 
-## 🧠 Model Architecture
+---
 
-The classifier is based on a **fully custom CNN architecture**, designed
-without transfer learning to practice low-level neural network
-implementation.
+## 🧪 How the model was developed
 
-It includes:
+The goal was to practice building a network from the ground up, so **no transfer learning** was used. The notebook documents each iteration and the reason behind it:
 
--   Convolutional layers + SiLU\
--   MaxPooling\
--   Fully Connected layers\
--   Dropout regularization\
--   Adam optimizer
+1. **Baseline CNN** → ~75% test accuracy, overfitting after epoch 5.
+2. **Dropout** → reduced overfitting, but accuracy plateaued.
+3. **Data augmentation** (flips, rotations) → overfitting disappeared, slower learning.
+4. **BatchNorm + average pooling + an extra conv block** → faster, more stable convergence.
+5. **Input normalization, AdamW (weight decay) and a learning-rate scheduler** → better convergence.
+6. **SiLU activation and 224×224 input resolution** → final model, **85.65%** test accuracy.
 
-------------------------------------------------------------------------
+### Final architecture
+- Convolutional blocks: Conv2d → BatchNorm → SiLU, with pooling
+- Fully connected classifier head with Dropout (0.3)
+- Loss: Cross-Entropy · Optimizer: AdamW (lr = 1e-3, weight decay = 1e-4)
+
+---
 
 ## 🗂️ Dataset
 
-Dataset used:
+[Mineral Photos — Kaggle](https://www.kaggle.com/datasets/floriangeillon/mineral-photos). The original dataset has 15 minerals; this project uses 5 of them.
 
-📦 **Mineral Photos (Kaggle)**\
-https://www.kaggle.com/datasets/floriangeillon/mineral-photos
+---
 
-The original dataset contains 15 mineral types.\
-This project uses only the following 5, chosen for their relevance to
-Chilean mineral deposits:
+## 🧩 Repository structure
 
--   **Azurite**\
--   **Copper**\
--   **Malachite**\
--   **Pyrite**\
--   **Quartz**
+```
+mineral-image-classifier/
+├── exploration.ipynb          # Full process: data, experiments, evaluation, demo
+├── models/
+│   └── mineral_classifier.pth # Trained weights
+├── helper_function/
+│   ├── new_dataset.py         # Dataset creation and dataloaders
+│   ├── helper_functions.py    # Plotting utilities
+│   └── utils.py               # Model saving
+├── examples/                  # Sample images
+└── HF_screenshot.png          # Demo preview
+```
 
-The goal of the project is to practice neural networks applied to mining
-and build a strong data science portfolio.
+The Gradio app (`app.py`, `model.py`, `requirements.txt`) lives in the [Hugging Face Space](https://huggingface.co/spaces/baalboza/mineral_classifier).
 
-------------------------------------------------------------------------
+---
 
-## 📊 Results
+## 🖼️ Demo preview
 
-### **📌 Test Accuracy:** **85.65%**
+![Hugging Face demo](HF_screenshot.png)
 
-------------------------------------------------------------------------
+| Azurite | Copper | Malachite | Pyrite | Quartz |
+|---|---|---|---|---|
+| ![](examples/azurita.jpeg) | ![](examples/copper.jpeg) | ![](examples/malachite.jpeg) | ![](examples/pirita.jpeg) | ![](examples/quartz.jpeg) |
 
-## 🖼️ Example Gallery
+---
 
-These spaces are ready for your real dataset images.
-
-### 🔹 Representative samples per class
-
-  -------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  Azurite                          Copper                          Malachite                          Pyrite                          Quartz
-  -------------------------------- ------------------------------- ---------------------------------- ------------------------------- -------------------------------
-  ![Azurite](examples/azurita.jpeg)   ![Copper](examples/copper.jpeg)   ![Malachite](examples/malachite.jpeg)   ![Pyrite](examples/pirita.jpeg)   ![Quartz](examples/quartz.jpeg)
-
-  -------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-------------------------------------------------------------------------
-
-### 🔹 Sample model prediction
-
-![Prediction](examples/malachite.jpeg)
-
-**Prediction:** Malachite\
-**Confidence:** 0.97
-
-------------------------------------------------------------------------
-
-### 🔹 Hugging Face Demo Preview
-
-![HF Demo](HF_screenshot.png)
-
-------------------------------------------------------------------------
-
-## 🧩 Project Structure
-
-    Mineral-Classifier/
-    │
-    ├── app.py                  # Gradio demo for Hugging Face
-    ├── mineral_classifier.pth  # Trained model
-    ├── exploration.ipynb       # Notebook with all exploration process
-    ├── new_dataset.py          # Dataset loading and preprocessing
-    ├── utils.py                # Saving model code
-    ├── helper_functions.py     # Plotting functions
-    ├── README.md
-    └── example_images/         # Folder for images used in the README
-
-------------------------------------------------------------------------
-
-## 🛠️ Technologies Used
-
--   Python\
--   PyTorch\
--   Gradio\
--   Hugging Face Spaces\
--   NumPy\
--   Pandas\
--   Matplotlib\
--   Git / GitHub
-
-------------------------------------------------------------------------
-
-## 🎯 Project Purpose
-
-This project is part of my portfolio as a **Metallurgical Engineer**
-specializing in **Data Science and Machine Learning applied to mining**.
-
-It demonstrates skills in:
-
--   Image preprocessing\
--   Building CNNs from scratch\
--   Model training and evaluation\
--   Deploying real ML apps on Hugging Face
-
-------------------------------------------------------------------------
+## 🛠️ Stack
+Python · PyTorch · torchvision · torchmetrics · Gradio · Hugging Face Spaces · NumPy · pandas · Matplotlib
 
 ## 📞 Contact
+**Bastián Albornoz** — Metallurgical Civil Engineer
+[LinkedIn](https://www.linkedin.com/in/bastian-albornoz-e/) · bastian.alejandro.a@gmail.com
 
-**Author:** Bastián Albornoz\
-🔗 LinkedIn: https://www.linkedin.com/in/bastian-albornoz-e/
-📧 Email: bastian.alejandro.a@gmail.com
